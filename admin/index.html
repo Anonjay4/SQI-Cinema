@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQI Cinema - Admin Panel</title>
+    <meta name="description" content="Admin panel for SQI Cinema management">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="../styles.css">
+    <link rel="stylesheet" href="./admin-styles.css">
+    
+    <!-- Firebase SDK (No longer type="module" here, as firebase.js will import them) -->
+    <!-- REMOVE THESE, firebase.js handles imports -->
+    <!-- <script type="module" src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js"></script> -->
+    <!-- <script type="module" src="https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js"></script> -->
+    <!-- <script type="module" src="https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js"></script> -->
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navigation" class="nav-container">
+        <div class="nav-content">
+            <!-- Logo -->
+            <!-- Remove onclick attributes and use data-attributes for JS to handle -->
+            <div class="nav-logo" data-section="../index.html">
+                <div class="logo-icon">
+                    <span class="logo-text">SQI</span>
+                </div>
+                <div class="logo-info">
+                    <h1 class="logo-title">SQI Cinema</h1>
+                    <p class="logo-subtitle">
+                        <span class="location-icon">📍</span>
+                        Admin Panel
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Admin Navigation -->
+            <div class="nav-menu desktop-menu">
+                <!-- Remove onclick attributes -->
+                <button class="nav-item active" data-section="dashboard">Dashboard</button>
+                <button class="nav-item" data-section="movies">Manage Movies</button>
+                <button class="nav-item" data-section="bookings">Bookings</button>
+                <button class="nav-item" data-section="../index.html">Back to Site</button>
+            </div>
+            
+            <!-- Logout Button -->
+            <!-- Remove onclick attribute -->
+            <div class="nav-contact">
+                <button class="btn btn-outline" data-action="logout">Logout</button>
+            </div>
+            
+            <!-- Mobile Menu Button -->
+            <!-- Remove onclick attribute -->
+            <button class="mobile-menu-btn">
+                <span class="menu-text">Menu</span>
+            </button>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div id="mobile-menu" class="mobile-menu">
+            <div class="mobile-menu-content">
+                <!-- Remove onclick attributes -->
+                <button class="nav-item mobile-nav-item" data-section="dashboard">Dashboard</button>
+                <button class="nav-item mobile-nav-item" data-section="movies">Manage Movies</button>
+                <button class="nav-item mobile-nav-item" data-section="bookings">Bookings</button>
+                <button class="nav-item mobile-nav-item" data-section="../index.html">Back to Site</button>
+                <!-- Remove onclick attribute -->
+                <button class="btn btn-outline" data-action="logout" style="margin-top: 1rem;">Logout</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Login Section -->
+    <section id="login-section" class="section active">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="login-header">
+                    <h2 class="login-title">🎬 Admin Login</h2>
+                    <p class="login-subtitle">SQI Cinema Management Panel</p>
+                </div>
+                
+                <form id="login-form" class="login-form">
+                    <div class="form-group">
+                        <label for="admin-username">Username</label>
+                        <input type="text" id="admin-username" name="username" placeholder="Enter admin username" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="admin-password">Password</label>
+                        <input type="password" id="admin-password" name="password" placeholder="Enter admin password" required>
+                    </div>
+                    
+                    <button type="submit" class="btn btn-primary btn-full">
+                        🔐 Login to Admin Panel
+                    </button>
+                </form>
+                
+                <div id="login-error" class="login-error" style="display: none;">
+                    <p>❌ Invalid credentials. Please try again.</p>
+                </div>
+                
+                <!-- <div class="login-demo-info">
+                    <h4>Demo Credentials:</h4>
+                    <p><strong>Username:</strong> anonjay</p>
+                    <p><strong>Password:</strong> Ishola04</p>
+                </div> -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Admin Panel -->
+    <div id="admin-panel" class="admin-panel" style="display: none;">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="admin-section active">
+            <div class="container">
+                <h2 class="section-title">📊 Admin Dashboard</h2>
+                
+                <div class="dashboard-stats">
+                    <div class="stat-card">
+                        <div class="stat-icon">🎬</div>
+                        <div class="stat-info">
+                            <h3 id="total-movies">0</h3>
+                            <p>Total Movies</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">🎫</div>
+                        <div class="stat-info">
+                            <h3 id="total-bookings">0</h3>
+                            <p>Total Bookings</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">💰</div>
+                        <div class="stat-info">
+                            <h3 id="total-revenue">₦0</h3>
+                            <p>Total Revenue</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon">📅</div>
+                        <div class="stat-info">
+                            <h3 id="today-bookings">0</h3>
+                            <p>Today's Bookings</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="dashboard-actions">
+                    <!-- Remove onclick attributes -->
+                    <button class="btn btn-primary" data-action="manage-movies">
+                        🎬 Manage Movies
+                    </button>
+                    <button class="btn btn-outline" data-action="view-bookings">
+                        🎫 View Bookings
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- Movies Management Section -->
+        <section id="movies" class="admin-section">
+            <div class="container">
+                <div class="section-header">
+                    <h2 class="section-title">🎬 Manage Movies</h2>
+                    <!-- Remove onclick attribute -->
+                    <button class="btn btn-primary" data-action="add-movie">
+                        ➕ Add New Movie
+                    </button>
+                </div>
+                
+                <!-- Add Movie Form -->
+                <div id="add-movie-form" class="movie-form-container" style="display: none;">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Movie Form</h3>
+                            <!-- Remove onclick attribute -->
+                            <button class="btn btn-outline" data-action="cancel-add-movie">Cancel</button>
+                        </div>
+                        <div class="card-content">
+                            <form id="movie-form" class="movie-form">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="movie-title">Movie Title *</label>
+                                        <input type="text" id="movie-title" name="title" placeholder="Enter movie title" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="movie-rating">Rating *</label>
+                                        <input type="number" id="movie-rating" name="rating" min="1" max="10" step="0.1" placeholder="8.5" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="movie-duration">Duration *</label>
+                                        <input type="text" id="movie-duration" name="duration" placeholder="2h 15m" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="movie-genre">Genre *</label>
+                                        <input type="text" id="movie-genre" name="genre" placeholder="Action/Thriller" required>
+                                    </div>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="movie-release-date">Release Date *</label>
+                                        <input type="date" id="movie-release-date" name="releaseDate" required>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="movie-end-date">End Date in Cinemas *</label>
+                                        <input type="date" id="movie-end-date" name="endDate" required>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="movie-status">Status *</label>
+                                    <select id="movie-status" name="status" required>
+                                        <option value="">Select status</option>
+                                        <option value="now-showing">Now Showing</option>
+                                        <option value="coming-soon">Coming Soon</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="movie-image">Upload Image *</label>
+                                    <input type="file" id="movie-image" name="image" accept="image/*" >
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="movie-showtimes">Showtimes (comma-separated) *</label>
+                                    <input type="text" id="movie-showtimes" name="showtimes" placeholder="2:00 PM, 5:30 PM, 8:45 PM" required>
+                                </div>
+                                
+                                <button type="submit" class="btn btn-primary btn-full">
+                                    ✅ Add Movie
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Movies List -->
+                <div class="movies-list">
+                    <div id="admin-movies-grid" class="admin-movies-grid">
+                        <!-- Movies will be populated by JavaScript -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Bookings Section -->
+        <section id="bookings" class="admin-section">
+            <div class="container">
+                <h2 class="section-title">🎫 Booking Management</h2>
+                
+                <div class="bookings-filters">
+                    <div class="filter-group">
+                        <label for="booking-date-filter">Filter by Date:</label>
+                        <!-- Remove onchange attribute -->
+                        <input type="date" id="booking-date-filter">
+                    </div>
+                    
+                    <div class="filter-group">
+                        <label for="booking-movie-filter">Filter by Movie:</label>
+                        <!-- Remove onchange attribute -->
+                        <select id="booking-movie-filter">
+                            <option value="">All Movies</option>
+                        </select>
+                    </div>
+                    
+                    <!-- Remove onclick attribute -->
+                    <button class="btn btn-outline" data-action="clear-filters">Clear Filters</button>
+                </div>
+                
+                <div class="bookings-table-container">
+                    <table class="bookings-table">
+                        <thead>
+                            <tr>
+                                <th>Booking ID</th>
+                                <th>Customer</th>
+                                <th>Movie</th>
+                                <th>Date & Time</th>
+                                <th>Seats</th>
+                                <th>Total</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bookings-table-body">
+                            <!-- Bookings will be populated by JavaScript -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">Processing...</p>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container">
+        <!-- Toasts will be populated by JavaScript -->
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="../firebase.js"></script>
+    <script type="module">
+      // For demo: Enter to main site when "Back to Site" is clicked
+      document.querySelectorAll('[data-section="../index.html"]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          window.location.href = '../index.html';
+        });
+      });
+    </script>
+    <script type="module" src="./admin-script.js"></script>
+</body>
+</html>

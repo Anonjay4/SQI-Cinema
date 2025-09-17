@@ -1,0 +1,519 @@
+/* Login Section */
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--spacing-md);
+    background: var(--gradient-hero);
+}
+
+.login-card {
+    background: var(--gradient-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: var(--spacing-3xl);
+    max-width: 400px;
+    width: 100%;
+    box-shadow: var(--shadow-cinema);
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+.login-title {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--cinema-gold);
+    margin-bottom: var(--spacing-sm);
+}
+
+.login-subtitle {
+    color: var(--muted-foreground);
+    font-size: 1rem;
+}
+
+.login-form {
+    margin-bottom: var(--spacing-lg);
+}
+
+.login-error {
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid rgba(239, 68, 68, 0.3);
+    border-radius: var(--radius);
+    padding: var(--spacing-md);
+    margin-bottom: var(--spacing-lg);
+    text-align: center;
+}
+
+.login-error p {
+    color: #ef4444;
+    margin: 0;
+}
+
+.login-demo-info {
+    background: var(--secondary);
+    border-radius: var(--radius);
+    padding: var(--spacing-md);
+    text-align: center;
+}
+
+.login-demo-info h4 {
+    color: var(--cinema-gold);
+    margin-bottom: var(--spacing-sm);
+    font-size: 0.875rem;
+}
+
+.login-demo-info p {
+    font-size: 0.75rem;
+    color: var(--muted-foreground);
+    margin: var(--spacing-xs) 0;
+}
+
+/* Admin Panel */
+.admin-panel {
+    padding-top: 4rem; /* Account for fixed nav */
+}
+
+.admin-section {
+    display: none;
+    min-height: calc(100vh - 4rem);
+    padding: var(--spacing-xl) 0;
+}
+
+.admin-section.active {
+    display: block;
+}
+
+/* Dashboard */
+.dashboard-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: var(--spacing-lg);
+    margin-bottom: var(--spacing-3xl);
+}
+
+.stat-card {
+    background: var(--gradient-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--spacing-xl);
+    display: flex;
+    align-items: center;
+    gap: var(--spacing-lg);
+    transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+    border-color: var(--cinema-gold);
+    transform: translateY(-2px);
+}
+
+.stat-icon {
+    font-size: 2.5rem;
+    background: var(--cinema-gold);
+    color: var(--cinema-gold-foreground);
+    width: 4rem;
+    height: 4rem;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-info h3 {
+    font-size: 2rem;
+    font-weight: 700;
+    color: var(--cinema-gold);
+    margin-bottom: var(--spacing-xs);
+}
+
+.stat-info p {
+    color: var(--muted-foreground);
+    font-size: 0.875rem;
+}
+
+.dashboard-actions {
+    display: flex;
+    gap: var(--spacing-md);
+    justify-content: center;
+}
+
+/* Section Header */
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: var(--spacing-xl);
+}
+
+/* Movie Form */
+.movie-form-container {
+    margin-bottom: var(--spacing-xl);
+}
+
+.movie-form {
+    display: grid;
+    gap: var(--spacing-md);
+}
+
+.form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-md);
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--foreground);
+    margin-bottom: var(--spacing-xs);
+}
+
+.form-group input,
+.form-group select {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--foreground);
+    font-size: 0.875rem;
+    transition: border-color 0.2s ease;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    border-color: var(--cinema-gold);
+}
+
+/* Admin Movies Grid */
+.admin-movies-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: var(--spacing-lg);
+}
+
+.admin-movie-card {
+    background: var(--gradient-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+    transition: all 0.3s ease;
+}
+
+.admin-movie-card:hover {
+    border-color: var(--cinema-gold);
+    box-shadow: var(--shadow-cinema);
+}
+
+.admin-movie-image {
+    position: relative;
+    height: 500px;
+    overflow: hidden;
+}
+
+.admin-movie-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.movie-status-badge {
+    position: absolute;
+    top: var(--spacing-sm);
+    right: var(--spacing-sm);
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.movie-status-badge.now-showing {
+    background: var(--success);
+    color: white;
+}
+
+.movie-status-badge.coming-soon {
+    background: var(--cinema-gold);
+    color: var(--cinema-gold-foreground);
+}
+
+.admin-movie-info {
+    padding: var(--spacing-md);
+}
+
+.admin-movie-title {
+    font-size: 1.125rem;
+    font-weight: 600;
+    color: var(--foreground);
+    margin-bottom: var(--spacing-sm);
+}
+
+.admin-movie-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--spacing-sm);
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+    margin-bottom: var(--spacing-md);
+}
+
+.admin-movie-actions {
+    display: flex;
+    gap: var(--spacing-sm);
+}
+
+.btn-danger {
+    background: var(--destructive);
+    color: white;
+    border: 1px solid var(--destructive);
+}
+
+.btn-danger:hover {
+    background: #dc2626;
+    transform: translateY(-1px);
+}
+
+/* Bookings Section */
+.bookings-filters {
+    display: flex;
+    gap: var(--spacing-lg);
+    align-items: end;
+    margin-bottom: var(--spacing-xl);
+    padding: var(--spacing-lg);
+    background: var(--secondary);
+    border-radius: var(--radius);
+}
+
+.filter-group {
+    display: flex;
+    flex-direction: column;
+    gap: var(--spacing-xs);
+}
+
+.filter-group label {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--foreground);
+}
+
+.filter-group input,
+.filter-group select {
+    padding: var(--spacing-sm) var(--spacing-md);
+    background: var(--input);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--foreground);
+    font-size: 0.875rem;
+}
+
+.bookings-table-container {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+}
+
+.bookings-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.bookings-table th,
+.bookings-table td {
+    padding: var(--spacing-md);
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+.bookings-table th {
+    background: var(--secondary);
+    font-weight: 600;
+    color: var(--cinema-gold);
+    font-size: 0.875rem;
+}
+
+.bookings-table td {
+    font-size: 0.875rem;
+    color: var(--foreground);
+}
+
+.booking-status {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    border-radius: var(--radius-sm);
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.booking-status.confirmed {
+    background: rgba(34, 197, 94, 0.2);
+    color: #22c55e;
+}
+
+.booking-status.pending {
+    background: rgba(255, 193, 7, 0.2);
+    color: #ffc107;
+}
+
+.booking-status.cancelled {
+    background: rgba(239, 68, 68, 0.2);
+    color: #ef4444;
+}
+
+.booking-actions {
+    display: flex;
+    gap: var(--spacing-xs);
+}
+
+.btn-small {
+    padding: var(--spacing-xs) var(--spacing-sm);
+    font-size: 0.75rem;
+    border-radius: var(--radius-sm);
+}
+
+/* Toast Notifications */
+.toast {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: var(--spacing-md);
+    min-width: 300px;
+    box-shadow: var(--shadow-cinema);
+    transform: translateX(100%);
+    animation: slideIn 0.3s ease forwards;
+    margin-bottom: var(--spacing-sm);
+}
+
+.toast.success {
+    border-color: var(--success);
+}
+
+.toast.error {
+    border-color: var(--destructive);
+}
+
+.toast.warning {
+    border-color: #ffc107;
+}
+
+.toast-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: var(--spacing-xs);
+}
+
+.toast-title {
+    font-weight: 600;
+    font-size: 0.875rem;
+}
+
+.toast-close {
+    background: none;
+    border: none;
+    color: var(--muted-foreground);
+    cursor: pointer;
+    font-size: 1.25rem;
+    line-height: 1;
+}
+
+.toast-description {
+    font-size: 0.875rem;
+    color: var(--muted-foreground);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .form-row {
+        grid-template-columns: 1fr;
+    }
+    
+    .dashboard-actions {
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .section-header {
+        flex-direction: column;
+        gap: var(--spacing-md);
+        align-items: stretch;
+    }
+    
+    .bookings-filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .bookings-table-container {
+        overflow-x: auto;
+    }
+    
+    .bookings-table {
+        min-width: 800px;
+    }
+    
+    .admin-movies-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 480px) {
+    .login-card {
+        padding: var(--spacing-xl);
+    }
+    
+    .dashboard-stats {
+        grid-template-columns: 1fr;
+    }
+    
+    .stat-card {
+        flex-direction: column;
+        text-align: center;
+    }
+    
+    .stat-icon {
+        width: 3rem;
+        height: 3rem;
+        font-size: 1.5rem;
+    }
+}
+
+/* Animation */
+@keyframes slideIn {
+    to {
+        transform: translateX(0);
+    }
+}
+
+/* Utility Classes */
+.text-success {
+    color: var(--success);
+}
+
+.text-warning {
+    color: #ffc107;
+}
+
+.text-danger {
+    color: var(--destructive);
+}
+
+.bg-success {
+    background: var(--success);
+}
+
+.bg-warning {
+    background: #ffc107;
+}
+
+.bg-danger {
+    background: var(--destructive);
+}

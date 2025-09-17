@@ -1,0 +1,535 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQI Cinema - Premium Movie Experience in Dugbe, Ibadan</title>
+    <meta name="description" content="Experience premium movies at SQI Cinema in Dugbe, Ibadan. Book tickets online for the latest blockbusters with comfortable seating and state-of-the-art technology.">
+
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Styles -->
+    <link rel="stylesheet" href="styles.css">
+    
+    <!-- Firebase SDK (No longer type="module" here, as firebase.js will import them) -->
+    <!-- These are now standard scripts, or better yet, remove them and let firebase.js handle imports -->
+    <!-- REMOVE THESE, firebase.js handles imports -->
+    <!-- <script type="module" src="https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js"></script> -->
+    <!-- <script type="module" src="https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js"></script> -->
+    <!-- <script type="module" src="https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js"></script> -->
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navigation" class="nav-container">
+        <div class="nav-content">
+            <!-- Logo -->
+            <!-- Remove onclick attributes and use data-attributes for JS to handle -->
+            <div class="nav-logo" data-section="home">
+                <div class="logo-icon">
+                    <span class="logo-text">SQI</span>
+                </div>
+                <div class="logo-info">
+                    <h1 class="logo-title">SQI Cinema</h1>
+                    <p class="logo-subtitle">
+                        <span class="location-icon">📍</span>
+                        Dugbe, Ibadan
+                    </p>
+                </div>
+            </div>
+            
+            <!-- Desktop Navigation -->
+            <div class="nav-menu desktop-menu">
+                <!-- Remove onclick attributes -->
+                <button class="nav-item" data-section="home">Home</button>
+                <button class="nav-item" data-section="movies">Movies</button>
+                <button class="nav-item" data-section="booking">Book Now</button>
+                <button class="nav-item" data-section="about">About</button>
+                <button class="nav-item" data-section="contact">Contact</button>
+            </div>
+            
+            <!-- Contact Info -->
+            <div class="nav-contact">
+                <div class="contact-item">
+                    <span class="contact-icon">📞</span>
+                    <span style="margin-top: 10px;">+234 708 123 4567</span>
+                </div>
+                <div class="contact-item">
+                    <span class="contact-icon">✉️</span>
+                    <span style="margin-top: 10px;">info@sqicinema.com</span>
+                </div>
+            </div>
+            
+            <!-- Mobile Menu Button -->
+            <!-- Remove onclick attribute -->
+            <button class="mobile-menu-btn">
+                <span class="menu-text">Menu</span>
+            </button>
+        </div>
+        
+        <!-- Mobile Navigation -->
+        <div id="mobile-menu" class="mobile-menu">
+            <div class="mobile-menu-content">
+                <!-- Remove onclick attributes -->
+                <button class="nav-item mobile-nav-item" data-section="home">Home</button>
+                <button class="nav-item mobile-nav-item" data-section="movies">Movies</button>
+                <button class="nav-item mobile-nav-item" data-section="booking">Book Now</button>
+                <button class="nav-item mobile-nav-item" data-section="about">About</button>
+                <button class="nav-item mobile-nav-item" data-section="contact">Contact</button>
+                
+                <div class="mobile-contact">
+                    <div class="contact-item">
+                        <span class="contact-icon">📞</span>
+                        <span>+234 708 123 4567</span>
+                    </div>
+                    <div class="contact-item">
+                        <span class="contact-icon">✉️</span>
+                        <span>info@sqicinema.com</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main>
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <!-- Hero Section -->
+            <div class="hero-section">
+                <div class="hero-background">
+                    <div class="hero-overlay"></div>
+                </div>
+                <div class="hero-content">
+                    <h1 class="hero-title">SQI CINEMA</h1>
+                    <p class="hero-subtitle">Premium Movie Experience in Dugbe, Ibadan</p>
+                    <div class="hero-location">
+                        <span class="location-icon">📍</span>
+                        <span>Located in the Heart of Dugbe, Ibadan</span>
+                    </div>
+                    <div class="hero-buttons">
+                        <!-- Remove onclick attributes -->
+                        <button class="btn btn-primary" data-action="browse-movies">Browse Movies</button>
+                        <button class="btn btn-outline" data-action="learn-more">Learn More</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Features Section -->
+            <div class="features-section">
+                <div class="container">
+                    <h2 class="section-title">Why Choose SQI Cinema?</h2>
+                    <div class="features-grid">
+                        <div class="feature-card">
+                            <div class="feature-icon">🎬</div>
+                            <h3 class="feature-title">Latest Movies</h3>
+                            <p class="feature-description">Watch the newest blockbusters and acclaimed films on our state-of-the-art screens.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">👥</div>
+                            <h3 class="feature-title">Comfort Seating</h3>
+                            <p class="feature-description">Luxurious reclining seats with optimal viewing angles for maximum comfort.</p>
+                        </div>
+                        <div class="feature-card">
+                            <div class="feature-icon">🏆</div>
+                            <h3 class="feature-title">Premium Experience</h3>
+                            <p class="feature-description">Crystal clear 4K projection with immersive Dolby Atmos sound technology.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Movies Section -->
+        <section id="movies" class="section">
+            <div class="container">
+                <div class="movies-content">
+                    <!-- Now Showing -->
+                    <div class="movies-category">
+                        <h2 class="section-title">Now Showing</h2>
+                        <div id="now-showing-grid" class="movies-grid">
+                            <!-- Movies will be populated by JavaScript -->
+                        </div>
+                    </div>
+                    
+                    <!-- Coming Soon -->
+                    <div class="movies-category">
+                        <h2 class="section-title">Coming Soon</h2>
+                        <div id="coming-soon-grid" class="movies-grid">
+                            <!-- Movies will be populated by JavaScript -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Booking Section -->
+        <section id="booking" class="section">
+            <div class="container">
+                <div class="booking-header">
+                    <h2 class="section-title">Book Your Tickets</h2>
+                    <div id="selected-movie-info" class="selected-movie-info">
+                        <!-- Movie info will be populated by JavaScript -->
+                    </div>
+                </div>
+
+                <!-- No Movie Selected State -->
+                <div id="no-movie-selected" class="no-movie-selected">
+                    <p class="no-movie-text">Please select a movie and showtime to continue with booking.</p>
+                    <!-- Remove onclick attribute -->
+                    <button class="btn btn-primary" data-action="browse-movies-booking">Browse Movies</button>
+                </div>
+
+                <!-- Booking Flow -->
+                <div id="booking-flow" class="booking-flow">
+                    <!-- Progress Steps -->
+                    <div class="progress-steps">
+                        <div class="step" data-step="date">
+                            <div class="step-number">1</div>
+                            <div class="step-connector"></div>
+                        </div>
+                        <div class="step" data-step="seats">
+                            <div class="step-number">2</div>
+                            <div class="step-connector"></div>
+                        </div>
+                        <div class="step" data-step="food">
+                            <div class="step-number">3</div>
+                            <div class="step-connector"></div>
+                        </div>
+                        <div class="step" data-step="details">
+                            <div class="step-number">4</div>
+                            <div class="step-connector"></div>
+                        </div>
+                        <div class="step" data-step="ticket">
+                            <div class="step-number">5</div>
+                        </div>
+                    </div>
+
+                    <!-- Booking Content -->
+                    <div class="booking-content">
+                        <!-- Step Content -->
+                        <div class="booking-step-content">
+                            <!-- Date Selection -->
+                            <div id="date-step" class="step-content">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Select Date</h3>
+                                    </div>
+                                    <div class="card-content">
+                                        <div id="date-selector" class="date-selector">
+                                            <!-- Dates will be populated by JavaScript -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Seat Selection -->
+                            <div id="seats-step" class="step-content">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Select Your Seats</h3>
+                                        <div id="seat-movie-info" class="seat-movie-info">
+                                            <!-- Movie info will be populated -->
+                                        </div>
+                                    </div>
+                                    <div class="card-content">
+                                        <!-- Screen -->
+                                        <div class="screen-indicator">
+                                            <div class="screen"></div>
+                                            <p class="screen-label">SCREEN</p>
+                                        </div>
+                                        
+                                        <!-- Seat Map -->
+                                        <div id="seat-map" class="seat-map">
+                                            <!-- Seats will be populated by JavaScript -->
+                                        </div>
+                                        
+                                        <!-- Legend -->
+                                        <div class="seat-legend">
+                                            <div class="legend-item">
+                                                <div class="seat-demo available"></div>
+                                                <span>Available</span>
+                                            </div>
+                                            <div class="legend-item">
+                                                <div class="seat-demo selected"></div>
+                                                <span>Selected</span>
+                                            </div>
+                                            <div class="legend-item">
+                                                <div class="seat-demo taken"></div>
+                                                <span>Taken</span>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Selected Seats Summary -->
+                                        <div id="selected-seats-summary" class="selected-seats-summary">
+                                            <!-- Summary will be populated by JavaScript -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Food & Drinks -->
+                            <div id="food-step" class="step-content">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Food & Drinks (Optional)</h3>
+                                    </div>
+                                    <div class="card-content">
+                                        <div id="food-menu" class="food-menu">
+                                            <!-- Food items will be populated by JavaScript -->
+                                        </div>
+                                        <div class="step-actions">
+                                            <!-- Remove onclick attributes -->
+                                            <button class="btn btn-outline" data-action="back-to-seats">Back to Seats</button>
+                                            <button class="btn btn-primary" data-action="continue-to-details">Continue to Details</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Booking Details -->
+                            <div id="details-step" class="step-content">
+                                <div class="card">
+                                    <div class="card-header">
+                                        <h3 class="card-title">Booking Details</h3>
+                                    </div>
+                                    <div class="card-content">
+                                        <!-- Booking Summary -->
+                                        <div id="booking-summary" class="booking-summary">
+                                            <!-- Summary will be populated by JavaScript -->
+                                        </div>
+                                        
+                                        <!-- Customer Form -->
+                                        <form id="booking-form" class="booking-form">
+                                            <div class="form-group">
+                                                <label for="customer-name">Full Name *</label>
+                                                <input type="text" id="customer-name" name="name" placeholder="Enter your full name" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="customer-email">Email Address *</label>
+                                                <input type="email" id="customer-email" name="email" placeholder="Enter your email" required>
+                                            </div>
+                                            <div class="form-group">
+                                                <label for="customer-phone">Phone Number *</label>
+                                                <input type="tel" id="customer-phone" name="phone" placeholder="Enter your phone number" required>
+                                            </div>
+                                            <button type="submit" id="pay-button" class="btn btn-primary btn-full">
+                                                Proceed to Payment - ₦<span id="payment-amount">0</span>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Ticket -->
+                            <div id="ticket-step" class="step-content">
+                                <div id="ticket-display" class="ticket-display">
+                                    <!-- Ticket will be populated by JavaScript -->
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Booking Summary Sidebar -->
+                        <div class="booking-sidebar">
+                            <div class="card">
+                                <div class="card-header">
+                                    <h3 class="card-title">Booking Summary</h3>
+                                </div>
+                                <div class="card-content">
+                                    <div id="sidebar-summary" class="sidebar-summary">
+                                        <!-- Summary will be populated by JavaScript -->
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- About Section -->
+        <section id="about" class="section">
+            <div class="container">
+                <h2 class="section-title">About SQI Cinema</h2>
+                
+                <div class="about-content">
+                    <div class="card">
+                        <div class="card-content">
+                            <h3 class="about-subtitle">Our Story</h3>
+                            <p class="about-text">
+                                Located in the vibrant heart of Dugbe, Ibadan, SQI Cinema has been bringing world-class 
+                                entertainment to movie lovers since our opening. We pride ourselves on providing an 
+                                exceptional cinematic experience with the latest technology and unmatched comfort.
+                            </p>
+                        </div>
+                    </div>
+                    
+                    <div class="about-grid">
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="about-icon">🕒</div>
+                                <h3 class="about-subtitle">Operating Hours</h3>
+                                <div class="about-hours">
+                                    <p>Monday - Thursday: 12:00 PM - 11:00 PM</p>
+                                    <p>Friday - Sunday: 10:00 AM - 12:00 AM</p>
+                                    <p>Public Holidays: 10:00 AM - 12:00 AM</p>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="card">
+                            <div class="card-content">
+                                <div class="about-icon">⭐</div>
+                                <h3 class="about-subtitle">Facilities</h3>
+                                <div class="about-facilities">
+                                    <p>• 4K Digital Projection</p>
+                                    <p>• Dolby Atmos Sound System</p>
+                                    <p>• Luxury Reclining Seats</p>
+                                    <p>• Concession Stand</p>
+                                    <p>• Free Wi-Fi</p>
+                                    <p>• Parking Available</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Contact Section -->
+        <section id="contact" class="section">
+            <div class="container">
+                <h2 class="section-title">Contact Us</h2>
+                
+                <div class="contact-grid">
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Get in Touch</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="contact-info">
+                                <div class="contact-item">
+                                    <div class="contact-icon">📍</div>
+                                    <div class="contact-details">
+                                        <h4>Address</h4>
+                                        <p>
+                                            123 Dugbe Market Road<br>
+                                            Dugbe, Ibadan<br>
+                                            Oyo State, Nigeria
+                                        </p>
+                                    </div>
+                                </div>
+                                
+                                <div class="contact-item">
+                                    <div class="contact-icon">📞</div>
+                                    <div class="contact-details">
+                                        <h4>Phone</h4>
+                                        <p>+234 708 123 4567</p>
+                                        <p>+234 701 234 5678</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="contact-item">
+                                    <div class="contact-icon">✉️</div>
+                                    <div class="contact-details">
+                                        <h4>Email</h4>
+                                        <p>info@sqicinema.com</p>
+                                        <p>bookings@sqicinema.com</p>
+                                    </div>
+                                </div>
+                                
+                                <div class="contact-item">
+                                    <div class="contact-icon">🧭</div>
+                                    <div class="contact-details">
+                                        <h4>Directions</h4>
+                                        <p>
+                                            Located opposite Dugbe Market, near the main bus terminal. 
+                                            Easily accessible by public transport.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="card">
+                        <div class="card-header">
+                            <h3 class="card-title">Business Hours</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="business-hours">
+                                <div class="hours-item">
+                                    <span class="day">Monday - Thursday</span>
+                                    <span class="time">12:00 PM - 11:00 PM</span>
+                                </div>
+                                <div class="hours-item">
+                                    <span class="day">Friday</span>
+                                    <span class="time">10:00 AM - 12:00 AM</span>
+                                </div>
+                                <div class="hours-item">
+                                    <span class="day">Saturday</span>
+                                    <span class="time">10:00 AM - 12:00 AM</span>
+                                </div>
+                                <div class="hours-item">
+                                    <span class="day">Sunday</span>
+                                    <span class="time">10:00 AM - 11:00 PM</span>
+                                </div>
+                                <div class="hours-item">
+                                    <span class="day">Public Holidays</span>
+                                    <span class="time">10:00 AM - 12:00 AM</span>
+                                </div>
+                            </div>
+                            
+                            <div class="hours-note">
+                                <p>
+                                    <strong>Note:</strong> Last movie screening starts 2 hours before closing time.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">
+                    <div class="logo-icon">
+                        <span class="logo-text">SQI</span>
+                    </div>
+                    <div class="footer-info">
+                        <h3 class="footer-title">SQI Cinema</h3>
+                        <p class="footer-subtitle">Dugbe, Ibadan</p>
+                    </div>
+                </div>
+                <p class="footer-description">Premium movie experience in the heart of Ibadan</p>
+                <div class="footer-links">
+                    <span>© 2025 SQI Cinema</span>
+                    <span>|</span>
+                    <span>All Rights Reserved</span>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Loading Overlay -->
+    <div id="loading-overlay" class="loading-overlay">
+        <div class="loading-spinner"></div>
+        <p class="loading-text">Processing...</p>
+    </div>
+
+    <!-- Toast Notifications -->
+    <div id="toast-container" class="toast-container">
+        <!-- Toasts will be populated by JavaScript -->
+    </div>
+
+    <!-- Scripts -->
+    <script type="module" src="firebase.js"></script>
+    <script type="module" src="script.js"></script>
+</body>
+</html>
