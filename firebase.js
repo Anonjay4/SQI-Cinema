@@ -1,7 +1,7 @@
 // Firebase Configuration and Database Functions
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 // Ensure all necessary Firestore functions are imported
-import { getFirestore, query, where, collection, getDocs, addDoc, doc, setDoc, deleteDoc, updateDoc, serverTimestamp, Timestamp, getDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+import { getFirestore, query, where, collection, getDocs, addDoc, doc, setDoc, deleteDoc, updateDoc, serverTimestamp, Timestamp, getDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
 import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
 const firebaseConfig = {
@@ -18,6 +18,41 @@ let db;
 let auth;
 let isFirebaseInitialized = false;
 // Remove FirebaseAPI global variable, it will be exported directly
+
+function normalizeDateForStorage(input) {
+    if (!input) return null;
+
+    let date;
+    if (input instanceof Date) {
+        date = new Date(input.getTime());
+    } else if (typeof input === 'string') {
+        date = new Date(`${input}T00:00:00`);
+    } else {
+        return null;
+    }
+
+    if (isNaN(date.getTime())) {
+        return null;
+    }
+
+    date.setHours(0, 0, 0, 0);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
+function createSeatDocumentId(movieTitle, dateStr, showtime) {
+    const sanitize = (value) =>
+        (value || '')
+            .toString()
+            .trim()
+            .toLowerCase()
+            .replace(/[^a-z0-9]+/g, '-')
+            .replace(/^-+|-+$/g, '') || 'unknown';
+
+    return `${sanitize(movieTitle)}_${dateStr}_${sanitize(showtime)}`;
+}
 
 function initializeFirebase() {
     try {
@@ -124,20 +159,45 @@ async function saveBooking(bookingData) {
             throw new Error("Firebase not initialized");
         }
 
+        const normalizedDate = normalizeDateForStorage(bookingData.date);
         const booking = {
             ...bookingData,
             createdAt: serverTimestamp(),
-            date: bookingData.date || null 
+            date: normalizedDate
         };
 
         const docRef = await addDoc(collection(db, 'bookings'), booking);
         
-        // Mark seats as taken in Firestore
-        const seatsRef = doc(db, 'seats', bookingData.date + '_' + bookingData.showtime);
-        await setDoc(seatsRef, {
-            seats: bookingData.seats,
-            status: 'taken'
-        });
+         // Mark seats as taken in Firestore for the specific movie, date, and showtime
+        if (
+            Array.isArray(bookingData.seats) &&
+            bookingData.seats.length > 0 &&
+            normalizedDate &&
+            bookingData.showtime &&
+            bookingData.movieTitle
+        ) {
+            const seatDocId = createSeatDocumentId(
+                bookingData.movieTitle,
+                normalizedDate,
+                bookingData.showtime
+            );
+            const seatsRef = doc(db, 'seats', seatDocId);
+
+            await setDoc(
+                seatsRef,
+                {
+                    movieTitle: bookingData.movieTitle,
+                    date: normalizedDate,
+                    showtime: bookingData.showtime,
+                    updatedAt: serverTimestamp()
+                },
+                { merge: true }
+            );
+
+            await updateDoc(seatsRef, {
+                seats: arrayUnion(...bookingData.seats)
+            });
+        }
 
         return { success: true, id: docRef.id };
     } catch (error) {

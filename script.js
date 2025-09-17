@@ -85,6 +85,31 @@ function addDays(date, days) {
     return result;
 }
 
+// Normalize a date value into a YYYY-MM-DD string in the user's local timezone
+function formatDateForStorage(input) {
+    if (!input) return '';
+
+    let date;
+    if (input instanceof Date) {
+        date = new Date(input.getTime());
+    } else if (typeof input === 'string') {
+        // Ensure string values are parsed without timezone drift
+        date = new Date(`${input}T00:00:00`);
+    } else {
+        return '';
+    }
+
+    if (isNaN(date.getTime())) {
+        return '';
+    }
+
+    date.setHours(0, 0, 0, 0);
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    return `${year}-${month}-${day}`;
+}
+
 // Initialize the application
 document.addEventListener('DOMContentLoaded', async function() {
     await initializeMoviesInFirestore();
@@ -218,8 +243,8 @@ function createMovieCard(movie) {
                 <span class="movie-genre">${movie.genre}</span>
             </div>
             ${movie.status === 'coming-soon' ? 
-                `<div class="coming-soon-date">Available from: ${formatDate(movie.releaseDate.toISOString().split('T')[0])}</div>
-                 <button class="btn btn-outline" data-movie-title="${movie.title}" data-release-date="${movie.releaseDate.toISOString().split('T')[0]}" data-action="book-advance">Book in Advance</button>` :
+                `<div class="coming-soon-date">Available from: ${formatDate(movie.releaseDate)}</div>
+                 <button class="btn btn-outline" data-movie-title="${movie.title}" data-release-date="${formatDateForStorage(movie.releaseDate)}" data-action="book-advance">Book in Advance</button>` :
                 `<div class="movie-showtimes">
                     <p class="showtimes-label">Showtimes:</p>
                     <div class="showtimes-grid">
@@ -324,7 +349,8 @@ function selectDate(date, element) {
     });
     
     element.classList.add('selected');
-    selectedDate = date;
+    selectedDate = new Date(date);
+    selectedDate.setHours(0, 0, 0, 0);
     
     if (selectedMovie) {
         updateShowtimesForMovie();
@@ -333,8 +359,8 @@ function selectDate(date, element) {
     updateBookingSummary();
     updatePayButtonAmount();
     addContinueButtonToDateStep();
-    if (selectedMovie && date && selectedShowtime) {
-        markTakenSeats(selectedMovie.title, date.toISOString().split('T')[0], selectedShowtime);
+    if (selectedMovie && selectedDate && selectedShowtime) {
+    markTakenSeats(selectedMovie.title, formatDateForStorage(selectedDate), selectedShowtime);
     }
 }
 
@@ -383,7 +409,7 @@ function selectShowtime(time, element) {
     addContinueButtonToDateStep();
 
     if (selectedMovie && selectedDate && selectedShowtime) {
-        markTakenSeats(selectedMovie.title, selectedDate.toISOString().split('T')[0], selectedShowtime);
+        markTakenSeats(selectedMovie.title, formatDateForStorage(selectedDate), selectedShowtime);
     }
 }
 
@@ -848,7 +874,7 @@ function processPayment() {
         customerPhone: customerDetails.phone,
         movieTitle: selectedMovie.title,
         showtime: selectedShowtime,
-        date: selectedDate ? selectedDate.toISOString().split('T')[0] : '',
+        date: formatDateForStorage(selectedDate),
         seats: selectedSeats,
         totalAmount: totalAmount,
         bookingDate: new Date().toISOString()
@@ -978,7 +1004,7 @@ function generateTicket() {
                     <div class="ticket-section">
                         <h4>Movie Details</h4>
                         <p><strong>Movie:</strong> ${selectedMovie.title}</p>
-                        <p><strong>Date:</strong> ${selectedDate ? formatDate(selectedDate.toISOString().split('T')[0]) : 'Not selected'}</p>
+                        <p><strong>Date:</strong> ${selectedDate ? formatDate(selectedDate) : 'Not selected'}</p>
                         <p><strong>Time:</strong> ${selectedShowtime}</p>
                         <p><strong>Seats:</strong> ${selectedSeats.join(', ')}</p>
                     </div>
@@ -1069,6 +1095,8 @@ function updateBookingSummary() {
 }
 
 async function markTakenSeats(movieTitle, dateStr, showtime) {
+    if (!movieTitle || !dateStr || !showtime) return;
+    
     // You MUST import 'query', 'where', 'collection', and 'getDocs' from Firestore at the top
     const q = query(
         collection(db, 'bookings'),
