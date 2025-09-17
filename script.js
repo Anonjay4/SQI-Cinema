@@ -882,7 +882,7 @@ function processPayment() {
 
     // ⚡️ IMPORTANT: setup must be triggered immediately inside this function
     const handler = PaystackPop.setup({
-        key: 'pk_test_e624e942dba637d5cd680259acd142ca26338728',
+        key: 'PAYSTACK_PUBLIC_KEY',
         email: bookingData.customerEmail,
         amount: bookingData.totalAmount * 100, // in kobo
         currency: 'NGN',
@@ -901,13 +901,13 @@ function processPayment() {
                     method: "POST",
                     headers: {
                         "accept": "application/json",
-                        "api-key": "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", 
+                        "api-key": "BREVO_API_KEY", 
                         "content-type": "application/json"
                     },
                     body: JSON.stringify({
                         sender: {
                         name: "SQI Cinema",
-                        email: "fagbenleolajide2021@gmail.com" 
+                        email: "SENDERS_EMAIL" 
                         },
                         to: [
                         {
@@ -1161,6 +1161,3 @@ document.addEventListener('click', function(e) {
         closeMobileMenu();
     }
 });
-
-// Removed the duplicate DOMContentLoaded listener for payButton
-// and the mobile-nav-item listeners as they are now handled in attachEventListeners.
