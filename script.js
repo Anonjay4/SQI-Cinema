@@ -22,6 +22,7 @@ let selectedFood = {};
 let customerDetails = {};
 let totalAmount = 0;
 let movies = [];
+let seatRefreshInterval = null; // Interval for refreshing seat availability
 
 // Default movies (for initial Firestore population)
 const defaultMovies = [
@@ -585,6 +586,12 @@ window.resetBooking = function() {
     totalAmount = 0;
     bookingStep = 'date';
     
+    // Clear seat refresh interval
+    if (seatRefreshInterval) {
+        clearInterval(seatRefreshInterval);
+        seatRefreshInterval = null;
+    }
+    
     document.querySelectorAll('.seat.selected').forEach(seat => {
         seat.classList.remove('selected');
     });
@@ -646,9 +653,28 @@ function updateBookingSteps() {
         currentStepContent.classList.add('active');
     }
     
-    // When entering seats step, refresh taken seats
+    // Clear any existing seat refresh interval
+    if (seatRefreshInterval) {
+        clearInterval(seatRefreshInterval);
+        seatRefreshInterval = null;
+    }
+    
+    // When entering seats step, refresh taken seats and start auto-refresh
     if (bookingStep === 'seats' && selectedMovie && selectedDate && selectedShowtime) {
-        markTakenSeats(selectedMovie.title, formatDateForStorage(selectedDate), selectedShowtime);
+        const dateStr = formatDateForStorage(selectedDate);
+        
+        // Initial refresh
+        markTakenSeats(selectedMovie.title, dateStr, selectedShowtime);
+        
+        // Auto-refresh every 5 seconds to show real-time seat availability
+        seatRefreshInterval = setInterval(() => {
+            if (bookingStep === 'seats') {
+                markTakenSeats(selectedMovie.title, dateStr, selectedShowtime);
+            } else {
+                clearInterval(seatRefreshInterval);
+                seatRefreshInterval = null;
+            }
+        }, 5000); // Refresh every 5 seconds
     }
 }
 
@@ -861,7 +887,7 @@ function resetButtonState() {
     }
 }
 
-function processPayment() {
+async function processPayment() {
     const payButton = document.getElementById('pay-button');
     payButton.disabled = true;
     payButton.innerHTML = '⏳ Processing...';
@@ -873,6 +899,28 @@ function processPayment() {
         return;
     }
 
+    // CRITICAL: Validate seats are still available before payment
+    if (selectedSeats.length === 0) {
+        alert('Please select at least one seat.');
+        resetButtonState();
+        return;
+    }
+
+    // Check if selected seats are still available
+    const dateStr = formatDateForStorage(selectedDate);
+    const takenSeats = await fetchTakenSeats(selectedMovie.title, dateStr, selectedShowtime);
+    
+    const conflictingSeats = selectedSeats.filter(seat => takenSeats.includes(seat));
+    
+    if (conflictingSeats.length > 0) {
+        alert(`Sorry! The following seats are no longer available: ${conflictingSeats.join(', ')}\n\nPlease select different seats.`);
+        resetButtonState();
+        // Refresh the seat map to show current availability
+        await markTakenSeats(selectedMovie.title, dateStr, selectedShowtime);
+        goToStep('seats');
+        return;
+    }
+
     // Prepare booking data
     const bookingData = {
         customerName: customerDetails.name,
@@ -880,7 +928,7 @@ function processPayment() {
         customerPhone: customerDetails.phone,
         movieTitle: selectedMovie.title,
         showtime: selectedShowtime,
-        date: formatDateForStorage(selectedDate),
+        date: dateStr,
         seats: selectedSeats,
         totalAmount: totalAmount,
         bookingDate: new Date().toISOString()
@@ -1105,11 +1153,15 @@ async function markTakenSeats(movieTitle, dateStr, showtime) {
     
     // Fetch taken seats from the seats collection (more efficient)
     const takenSeats = await fetchTakenSeats(movieTitle, dateStr, showtime);
+    console.log('Taken seats for', movieTitle, dateStr, showtime, ':', takenSeats);
+
+    // Store currently selected seats to restore them if they're still available
+    const previouslySelected = [...selectedSeats];
 
     // Reset all seats to available first
     document.querySelectorAll('.seat').forEach(seat => {
         seat.classList.remove('taken');
-        seat.classList.remove('selected'); // Also clear selected state
+        seat.classList.remove('selected');
     });
 
     // Mark seats that are actually taken
@@ -1120,15 +1172,21 @@ async function markTakenSeats(movieTitle, dateStr, showtime) {
         }
     });
 
-    // Re-select previously selected seats if they are not taken
-    selectedSeats = selectedSeats.filter(seatId => {
+    // Restore previously selected seats ONLY if they are NOT taken
+    selectedSeats = previouslySelected.filter(seatId => {
         const seatElement = document.querySelector(`[data-seat-id="${seatId}"]`);
         if (seatElement && !seatElement.classList.contains('taken')) {
             seatElement.classList.add('selected');
-            return true;
+            return true; // Keep this seat in selectedSeats
+        } else {
+            // Seat was taken by another user - alert them
+            if (previouslySelected.includes(seatId) && takenSeats.includes(seatId)) {
+                console.warn(`Seat ${seatId} is no longer available`);
+            }
+            return false; // Remove this seat from selectedSeats
         }
-        return false;
     });
+    
     updateSeatsDisplay(); // Update display after re-filtering selected seats
 }
 
