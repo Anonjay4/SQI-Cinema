@@ -888,7 +888,7 @@ function processPayment() {
 
     // ⚡️ IMPORTANT: setup must be triggered immediately inside this function
     const handler = PaystackPop.setup({
-        key: 'PAYSTACK_PUBLIC_KEY',
+        key: 'pk_test_e624e942dba637d5cd680259acd142ca26338728',
         email: bookingData.customerEmail,
         amount: bookingData.totalAmount * 100, // in kobo
         currency: 'NGN',
