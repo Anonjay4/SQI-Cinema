@@ -2,7 +2,7 @@
 import { initializeApp } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-app.js";
 // Ensure all necessary Firestore functions are imported
 import { getFirestore, query, where, collection, getDocs, addDoc, doc, setDoc, deleteDoc, updateDoc, serverTimestamp, Timestamp, getDoc, arrayUnion } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
-import { getAuth, signInWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+import { getAuth, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 
 const firebaseConfig = {
     apiKey: "AIzaSyDHgPQTgGr5BpMPK2U1M7nuz6C3wexdp40",

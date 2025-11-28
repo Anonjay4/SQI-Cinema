@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Setup Admin User - SQI Cinema</title>
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .setup-container {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            max-width: 600px;
+            width: 100%;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+        }
+        .info {
+            background: #f0f9ff;
+            border-left: 4px solid #3b82f6;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+        .success {
+            background: #f0fdf4;
+            border-left: 4px solid #22c55e;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+            display: none;
+        }
+        .error {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+            display: none;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 16px;
+            cursor: pointer;
+            width: 100%;
+            margin-top: 20px;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        button:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+        }
+        code {
+            background: #f1f5f9;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-family: monospace;
+        }
+        .credentials {
+            background: #fef3c7;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+        .credentials p {
+            margin: 8px 0;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="setup-container">
+        <h1>🎬 Admin Setup - SQI Cinema</h1>
+        <p>This script will create the admin user in Firebase Authentication and Firestore.</p>
+
+        <div class="info">
+            <p><strong>ℹ️ What this does:</strong></p>
+            <ul>
+                <li>Creates a Firebase Authentication user</li>
+                <li>Stores admin username in Firestore <code>adminUsers</code> collection</li>
+                <li>Links the username to the Firebase auth email</li>
+            </ul>
+        </div>
+
+        <div class="credentials">
+            <p><strong>📋 Admin Credentials:</strong></p>
+            <p>Username: <code>anonjay</code></p>
+            <p>Email: <code>admin@sqicinema.com</code></p>
+            <p>Password: <code>Ishola04</code></p>
+        </div>
+
+        <button id="setup-btn" onclick="setupAdmin()">🚀 Create Admin User</button>
+
+        <div id="success-msg" class="success">
+            <p><strong>✅ Success!</strong></p>
+            <p>Admin user has been created successfully. You can now login to the admin panel.</p>
+            <p><a href="index.html">Go to Admin Login →</a></p>
+        </div>
+
+        <div id="error-msg" class="error">
+            <p><strong>❌ Error:</strong></p>
+            <p id="error-text"></p>
+        </div>
+    </div>
+
+    <script type="module">
+        import { auth, db, isFirebaseInitialized } from '../firebase.js';
+        import { createUserWithEmailAndPassword } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
+        import { doc, setDoc } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-firestore.js";
+
+        window.setupAdmin = async function() {
+            const btn = document.getElementById('setup-btn');
+            const successMsg = document.getElementById('success-msg');
+            const errorMsg = document.getElementById('error-msg');
+            const errorText = document.getElementById('error-text');
+
+            // Reset messages
+            successMsg.style.display = 'none';
+            errorMsg.style.display = 'none';
+
+            // Disable button
+            btn.disabled = true;
+            btn.textContent = '⏳ Creating admin user...';
+
+            try {
+                if (!isFirebaseInitialized) {
+                    throw new Error("Firebase is not initialized. Please check your configuration.");
+                }
+
+                const adminUsername = 'anonjay';
+                const adminEmail = 'admin@sqicinema.com';
+                const adminPassword = 'Ishola04';
+
+                // Step 1: Create Firebase Auth user
+                console.log('Creating Firebase Auth user...');
+                let userCredential;
+                try {
+                    userCredential = await createUserWithEmailAndPassword(auth, adminEmail, adminPassword);
+                } catch (authError) {
+                    if (authError.code === 'auth/email-already-in-use') {
+                        console.log('User already exists in Firebase Auth, proceeding to Firestore setup...');
+                        // Continue to Firestore setup even if user exists
+                    } else {
+                        throw authError;
+                    }
+                }
+
+                // Step 2: Store username-email mapping in Firestore
+                console.log('Creating Firestore adminUsers document...');
+                await setDoc(doc(db, 'adminUsers', adminUsername), {
+                    email: adminEmail,
+                    username: adminUsername,
+                    role: 'admin',
+                    createdAt: new Date().toISOString()
+                });
+
+                console.log('Admin user created successfully!');
+                successMsg.style.display = 'block';
+                btn.textContent = '✅ Admin User Created!';
+
+            } catch (error) {
+                console.error('Error creating admin user:', error);
+                errorText.textContent = error.message;
+                errorMsg.style.display = 'block';
+                btn.disabled = false;
+                btn.textContent = '🚀 Create Admin User';
+            }
+        }
+    </script>
+</body>
+</html>
