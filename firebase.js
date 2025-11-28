@@ -221,6 +221,28 @@ async function updateBookingStatus(bookingId, status) {
     }
 }
 
+// Fetch taken seats for a specific movie, date, and showtime
+async function fetchTakenSeats(movieTitle, dateStr, showtime) {
+    try {
+        if (!isFirebaseInitialized) {
+            throw new Error("Firebase not initialized");
+        }
+
+        const seatDocId = createSeatDocumentId(movieTitle, dateStr, showtime);
+        const seatsRef = doc(db, 'seats', seatDocId);
+        const seatsSnap = await getDoc(seatsRef);
+
+        if (seatsSnap.exists()) {
+            const data = seatsSnap.data();
+            return data.seats || [];
+        }
+        return [];
+    } catch (error) {
+        console.error('Error fetching taken seats:', error);
+        return [];
+    }
+}
+
 // Remove window.FirebaseAPI and export functions directly
 export { 
     db, 
@@ -232,9 +254,11 @@ export {
     deleteMovie,
     saveBooking,
     updateBookingStatus,
+    fetchTakenSeats,
     getDoc,
     getDocs,
     collection,
+    doc as firestoreDoc,
     query,
     where
 };

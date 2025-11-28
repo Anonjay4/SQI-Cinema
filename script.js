@@ -4,6 +4,7 @@ import {
     saveMovie, 
     fetchMovies, 
     saveBooking,
+    fetchTakenSeats,
     query,
     where,
     getDocs, 
@@ -644,6 +645,11 @@ function updateBookingSteps() {
     if (currentStepContent) {
         currentStepContent.classList.add('active');
     }
+    
+    // When entering seats step, refresh taken seats
+    if (bookingStep === 'seats' && selectedMovie && selectedDate && selectedShowtime) {
+        markTakenSeats(selectedMovie.title, formatDateForStorage(selectedDate), selectedShowtime);
+    }
 }
 
 function handleSeatClick(e) {
@@ -1097,25 +1103,13 @@ function updateBookingSummary() {
 async function markTakenSeats(movieTitle, dateStr, showtime) {
     if (!movieTitle || !dateStr || !showtime) return;
     
-    // You MUST import 'query', 'where', 'collection', and 'getDocs' from Firestore at the top
-    const q = query(
-        collection(db, 'bookings'),
-        where('movieTitle', '==', movieTitle),
-        where('date', '==', dateStr),
-        where('showtime', '==', showtime)
-    );
-    const snapshot = await getDocs(q);
-    const takenSeats = [];
-    snapshot.forEach(docSnap => {
-        const data = docSnap.data();
-        if (Array.isArray(data.seats)) takenSeats.push(...data.seats);
-    });
+    // Fetch taken seats from the seats collection (more efficient)
+    const takenSeats = await fetchTakenSeats(movieTitle, dateStr, showtime);
 
     // Reset all seats to available first
     document.querySelectorAll('.seat').forEach(seat => {
         seat.classList.remove('taken');
         seat.classList.remove('selected'); // Also clear selected state
-        // seat.addEventListener('click', () => toggleSeat(seat.dataset.seatId, seat)); // Re-attach listener
     });
 
     // Mark seats that are actually taken
@@ -1123,7 +1117,6 @@ async function markTakenSeats(movieTitle, dateStr, showtime) {
         const seatElement = document.querySelector(`[data-seat-id="${seatId}"]`);
         if (seatElement) {
             seatElement.classList.add('taken');
-            // seatElement.removeEventListener('click', () => toggleSeat(seatId, seatElement)); // Remove listener for taken seats
         }
     });
 
@@ -1141,8 +1134,19 @@ async function markTakenSeats(movieTitle, dateStr, showtime) {
 
 function formatDate(input) {
     if (!input) return 'N/A';
-    const date = (input instanceof Date) ? input : new Date(input + 'T00:00:00');
+    
+    let date;
+    if (input instanceof Date) {
+        date = input;
+    } else if (typeof input === 'string') {
+        // Handle YYYY-MM-DD format without timezone shift
+        date = new Date(input + 'T00:00:00');
+    } else {
+        return 'Invalid Date';
+    }
+    
     if (isNaN(date.getTime())) return 'Invalid Date';
+    
     return date.toLocaleDateString('en-US', {
         weekday: 'long',
         year: 'numeric',

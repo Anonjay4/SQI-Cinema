@@ -738,10 +738,21 @@ function addDays(date, days) {
 
 function formatDate(dateString) {
     if (!dateString) return 'N/A';
-    const date = new Date(dateString);
+    
+    let date;
+    if (typeof dateString === 'string') {
+        // Handle YYYY-MM-DD format without timezone shift
+        date = new Date(dateString + 'T00:00:00');
+    } else if (dateString instanceof Date) {
+        date = dateString;
+    } else {
+        return 'Invalid Date';
+    }
+    
     if (isNaN(date.getTime())) {
         return 'Invalid Date';
     }
+    
     return date.toLocaleDateString('en-US', {
         weekday: 'short',
         year: 'numeric',
